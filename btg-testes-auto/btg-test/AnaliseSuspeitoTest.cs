@@ -1,6 +1,4 @@
-﻿
-
-using btg_testes_auto;
+﻿using btg_testes_auto;
 using System.Reflection.Metadata;
 
 namespace btg_test

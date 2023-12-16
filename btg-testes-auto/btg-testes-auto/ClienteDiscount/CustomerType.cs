@@ -2,6 +2,7 @@
 {
     public enum CustomerType
     {
+        Others,
         Regular,
         Premium
     }
