@@ -20,7 +20,6 @@ namespace btg_test.PlaylistSongsTest
         Song thirdSong = new Song() { Artist = "thirdArtist", Title = "thirdTitle" };
         Song fourthSong = new Song() { Artist = "fourthArtist", Title = "fourthTitle" };
 
-
         [Fact(DisplayName = "Not Valid Playlist")]
         public void AddSongsToPlaylist_NotValidPlaylist_ReturnFalse()
         {
@@ -60,5 +59,42 @@ namespace btg_test.PlaylistSongsTest
 
         }
 
+        [Fact(DisplayName = "Not Valid Playlist with Songs List")]
+        public void AddSongsToPlaylist_NotValidPlaylistWithList_ReturnFalse()
+        {
+            List<Song> songs = new List<Song>() { firstSong, secondSong, thirdSong };
+            Playlist playlist = new Playlist() { MaxSongs = 3, Songs = songs };
+
+            _mockPlaylistValidationService.CanAddSongToPlaylist(playlist, fourthSong)
+                .Returns(false);
+
+            bool result = _sut.AddSongToPlaylist(playlist, fourthSong);
+
+            result.Should().BeFalse();
+            _mockPlaylistValidationService.Received().CanAddSongToPlaylist(playlist, fourthSong);
+            playlist.Songs.Should().Contain(firstSong);
+            playlist.Songs.Should().Contain(secondSong);
+            playlist.Songs.Should().Contain(thirdSong);
+            playlist.Songs.Should().NotContain(fourthSong);
+        }
+
+
+        [Fact(DisplayName = "Valid Playlist with Songs List")]
+        public void AddSongsToPlaylist_NotValidPlaylistWithSongsList_ReturnFalse()
+        {
+            List<Song> songs = new List<Song>() { firstSong, secondSong, thirdSong };
+
+            Playlist playlist = new Playlist() { MaxSongs = 7, Songs = new List<Song>()};
+
+            _mockPlaylistValidationService.CanAddSongToPlaylist(playlist, Arg.Any<Song>()).Returns(true);
+
+             _sut.AddSongsToPlaylist(playlist, songs);
+
+            _mockPlaylistValidationService.Received(3).CanAddSongToPlaylist(playlist, Arg.Any<Song>());
+            playlist.Songs.Should().Contain(firstSong);
+            playlist.Songs.Should().Contain(secondSong);
+            playlist.Songs.Should().Contain(thirdSong);
+            playlist.Songs.Should().HaveCount(3);
+        }
     }
 }

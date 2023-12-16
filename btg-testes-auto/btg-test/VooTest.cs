@@ -1,10 +1,11 @@
 ﻿using btg_testes_auto;
+using FluentAssertions;
 
 namespace btg_test
 {
     public class VooTest
     {
-        Voo voo = new("168", "A107", new DateTime(2023, 07, 20, 14, 30, 0));
+        Voo voo = new("168", "A107", new DateTime(2023, 07, 20, 11, 30, 0));
 
 
         [Fact(DisplayName = "Voo vazio")]
@@ -67,6 +68,23 @@ namespace btg_test
             Assert.True(retorno);
         }
 
+        [Fact(DisplayName = "Assento disponivel com próximo livre")]
+        public void VerificarDisponibilidadeAssento_AssentoVinteETresComProximoLivre_RetornaTrue()
+        {
+            voo.OcupaAssento(0);
 
+            var retorno = voo.ProximoLivre();
+
+            retorno.Should().BeGreaterThan(0);
+        }
+
+
+        [Fact(DisplayName = "ExibeInformações de Voo")]
+        public void ExibeInformacoesVoo_RetornaMensagemInformacoes()
+        {
+            var retorno = voo.ExibeInformacoesVoo();
+
+            retorno.Should().Be("Aeronave 168 registrada sob voo de número A107 para o dia e hora 7/20/2023 11:30:00 AM");
+        }
     }
 }
